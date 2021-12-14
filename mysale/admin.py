@@ -26,6 +26,7 @@ class ProductView(AuthenticatedModelView):
     }
 class CategoryView(AuthenticatedModelView):
     column_display_pk = True
+    can_view_details = True
 
 
 
