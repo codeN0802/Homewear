@@ -1,0 +1,52 @@
+{% extends 'layout/base.html' %}
+
+{% block title %} Giỏ hàng {% endblock %}
+
+{% block content %}
+    {% if err_msg %}
+        <div class="alert alert-danger" id="thongbao">
+        </div>
+    {% endif %}
+   <h1 class="text-center text-info">Giỏ hàng</h1>
+<!--    session là biến toàn cục-->
+    {% if 'cart' in session and session['cart'] %}
+        <table class="table">
+            <tr>
+                <th>Mã sản phẩm</th>
+                 <th>Tên sản phẩm</th>
+                 <th>Đơn giá</th>
+                 <th>Số lượng</th>
+            </tr>
+            {% for c in session['cart'].values() %}
+                <tr>
+                    <td>{{c.id}}</td>
+                    <td>{{c.name}}</td>
+                    <td>{{"{:,.1f}".format(c.price)}} VNĐ</td>
+                    <td>{{c.quantity}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% if stats %}
+            <div class="alert alert-info">
+                <h4> Tổng sản phẩm: {{stats.total_quantity}}</h4>
+                 <h4> Tổng tiền: {{"{:,.1f}".format(stats.total_amount)}} VNĐ</h4>
+
+            </div>
+        {% endif %}
+
+        <div class="d-flex justify-content-end">
+            {% if current_user.is_authenticated %}
+            <input type="button" value="Thanh toán" class="btn btn-info " onclick="pay()"/>
+            {% else %}
+                <a href="{{ url_for('user_login',next='cart')}}" class="text-danger">Đăng nhập để thanh toán....</a>
+            {% endif %}
+
+        </div>
+
+
+
+    {% else %}
+        <p>Không có sản phẩm</p>
+    {% endif %}
+<br><br>
+{% endblock %}

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Chi tiết sản phẩm</h1>
+{% if product %}
+<img src="{{url_for('static', filename=product.image)}}" width="100px">
+<a> {{product.name}}--{{"{:,.2f}".format(product.price)}} VND--{{product.description}}</a>
+{% endif %}
+</body>
+</html>
