@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="{{url_for('static', filename='css/style.css')}}" rel="stylesheet">
+    <style>
+
+</style>
+</head>
+<body>
+    <h1>Danh muc sản pham</h1>
+    <form>
+        <select name="category_id">
+            <option value="">--Please choose an option--</option>
+            {% for c in categories %}
+            <option  value="{{(c.id)}}" >{{ c.name }}</option>
+            {% endfor %}
+
+        </select>
+         <input type="text" placeholder="Nhập từ khóa muốn tìm.." name="keyword" />
+         <input type="number" placeholder="Gía bắt đầu..." name="from_price">
+         <input type="number" placeholder="Gía kết thúc..." name="to_price">
+         <input type="submit" value="Tìm kiếm">
+    </form>
+    <ul>
+        {% for p in products %}
+            <li style=" list-style-type: none; margin-bottom:20px">
+                <a href="{{url_for('product_detail', product_id=p.id)}}">
+                    <img src="{{url_for('static', filename=p.image)}}" width="100px" style="border-radius:30%;">
+                </a>
+                {{p.name}}--{{"{:,.2f}".format(p.price)}}--{{p.description}}</li>
+        {% endfor %}
+    </ul>
+
+</div>
+</body>
+</html>

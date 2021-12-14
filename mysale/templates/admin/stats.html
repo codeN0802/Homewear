@@ -1,0 +1,191 @@
+{% extends 'admin/base.html' %}
+{% block body %}
+
+    <h1 class="text-center text-info">Thống kê sản phẩm</h1>
+    <div class="row" style="    border: 1px solid;
+    border-radius: 20px;
+    background-color: #E5eaea;">
+        <div class="col-md-6">
+            <table class="table">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên danh mục</th>
+                    <th>Số lượng sản phẩm</th>
+                </tr>
+                {% for s in stats %}
+                <tr>
+                    <td>{{s[0].id}}</td>
+                     <td>{{s[0].name}}</td>
+                     <td>{{s[1]}}</td>
+                </tr>
+                {% endfor %}
+             </table>
+        </div>
+        <div class="col-md-6">
+            <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
+    </div>
+<br>
+<br>
+<h1 class="text-center text-info">Thống kê doanh thu từng sản phẩm</h1>
+    <div class="row" style="    border: 1px solid;
+    border-radius: 20px;
+    background-color: #E5eaea;">
+        <div class="col-md-6">
+            <table class="table">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Doanh thu</th>
+                </tr>
+                {% for sp in stats_product %}
+                <tr>
+                    <td>{{sp[0]}}</td>
+                     <td>{{sp[1]}}</td>
+                     <td>
+                         {% if sp[2] %}
+                         {{"{:,.1f}".format(sp[2])}} VNĐ
+                         {% else %}
+                         0.0 VNĐ
+                         {% endif %}
+                     </td>
+                </tr>
+                {% endfor %}
+             </table>
+        </div>
+        <div class="col-md-6">
+             <form>
+                 <div class="form-group">
+                     <input class="form-control mr-sm-2" type="text" name="keyword" placeholder="Nhập từ khóa...">
+                 </div>
+                  <div class="form-group">
+                     <input class="form-control mr-sm-2" type="date" name="from_date" >
+                 </div>
+                  <div class="form-group">
+                     <input class="form-control mr-sm-2" type="date" name="to_date">
+                 </div>
+
+
+                <button class="btn btn-success" type="submit">Tìm kiếm</button>
+            </form>
+            <canvas id="myChart2" width="400" height="400"></canvas>
+        </div>
+    </div>
+<br>
+<br>
+<h1 class="text-center text-info">Thống kê doanh thu </h1>
+    <div class="row" style="    border: 1px solid;
+    border-radius: 20px;
+    background-color: #E5eaea;">
+        <div class="col-md-6">
+            <table class="table">
+                <tr>
+                    <th>Tháng</th>
+
+                    <th>Doanh thu</th>
+                </tr>
+                {% for s3 in doanhthu %}
+                <tr>
+                    <td>{{s3[0]}}</td>
+                     <td> {{"{:,.1f}".format(s3[1])}} VNĐ</td>
+
+                </tr>
+                {% endfor %}
+             </table>
+        </div>
+        <div class="col-md-6">
+             <form>
+                 <div class="form-group">
+                    <select name="year" class="form-control">
+                        <option value="">--Please choose an option--</option>
+                        {% for c in range(2000, 2030) %}
+                            <option  value="{{(c)}}" >{{ c}}</option>
+                        {% endfor %}
+
+                    </select>
+                 </div>
+
+
+
+                <button class="btn btn-success" type="submit">Tìm kiếm</button>
+            </form>
+            <canvas id="myChart3" width="400" height="400"></canvas>
+        </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let labels = [] , couter = [], colors=[], borderColors=[]
+    let labels2 = [] , couter2 = [], colors2=[], borderColors2=[]
+    let labels3 = [] , couter3 = [], colors3=[], borderColors3=[]
+    let r,g,b
+<!--    bảng 1-->
+    {% for s in  stats %}
+        labels.push('{{s[0].name}}')
+        couter.push({{s[1]}})
+        r = parseInt(Math.random()*255)
+        g = parseInt(Math.random()*255)
+        b= parseInt(Math.random()*255)
+        colors.push(`rgba(${r}, ${g},${b}, 0.2)`)
+        borderColors.push(`rgba(${r}, ${g},${b}, 1)`)
+    {% endfor %}
+
+
+<!--    bảng 2-->
+    {% for s in  stats_product %}
+    {% if s[2] %}
+        labels2.push('{{s[1]}}')
+        couter2.push({{s[2]}})
+        r = parseInt(Math.random()*255)
+        g = parseInt(Math.random()*255)
+        b= parseInt(Math.random()*255)
+        colors2.push(`rgba(${r}, ${g},${b}, 0.2)`)
+        borderColors2.push(`rgba(${r}, ${g},${b}, 1)`)
+    {% endif %}
+    {% endfor %}
+
+<!--    bảng 3-->
+     {% for s in  doanhthu %}
+        labels3.push('{{s[0]}}')
+        couter3.push({{s[1]}})
+        r = parseInt(Math.random()*255)
+        g = parseInt(Math.random()*255)
+        b= parseInt(Math.random()*255)
+        colors3.push(`rgba(${r}, ${g},${b}, 0.2)`)
+        borderColors3.push(`rgba(${r}, ${g},${b}, 1)`)
+    {% endfor %}
+
+
+    window.onload = function(){
+        const ctx = document.getElementById('myChart').getContext('2d');
+        loadChart(ctx, labels, couter, 'pie',colors, borderColors)
+        const ctx2 = document.getElementById('myChart2').getContext('2d');
+        loadChart(ctx2, labels2, couter2, 'bar',  colors2, borderColors2)
+        const ctx3 = document.getElementById('myChart3').getContext('2d');
+        loadChart(ctx3, labels3, couter3, 'line',  colors3, borderColors3)
+    }
+    function loadChart(ctx, labels, data, type, colors, borderColors) {
+        const myChart = new Chart(ctx, {
+            type: type,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Thống kê doanh thu ',
+                    data: data,
+                    backgroundColor: colors,
+                    borderColor: borderColors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+                
+            }
+        });
+    }
+</script>
+
+{% endblock %}

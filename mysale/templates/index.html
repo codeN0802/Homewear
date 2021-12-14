@@ -1,0 +1,66 @@
+{% extends 'layout/base.html' %}
+
+{% block title %} Trang chủ {% endblock %}
+
+{% block content %}
+     <h1>BÁN HÀNG TRỰC TUYẾN</h1>
+
+    {% if products %}
+    <form class="form-inline">
+    <input class="form-control mr-sm-2" type="text" name="keyword" placeholder="Nhập từ khóa...">
+     <input class="form-control mr-sm-2" type="number" name="from_price" placeholder="Nhập giá bắt đầu..." >
+     <input class="form-control mr-sm-2" type="number" name="to_price" placeholder="Nhập giá kết thúc..." >
+    <button class="btn btn-success" type="submit">Tìm kiếm</button>
+  </form>
+    <div class="row">
+        {% for p in products %}
+        <div class="col-md-4 col-xs-12" style="padding:5px">
+            <div class="card" style="padding:5px">
+                <img class="card-img-top"
+                     src="{{p.image}}" alt="{{p.name}}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ p.name }}</h5>
+                    <p class="card-text">{{"{:,.1f}".format(p.price)}}</p>
+                    <a href="#" class="btn btn-primary" onclick="addToCart({{ p.id }}, '{{p.name}}', {{p.price}})">Đặt hàng</a>
+                 </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% if request.args.keyword or request.args.from_price or request.args.to_price %}
+
+    {% else %}
+
+
+        {% if request.args.category_id %}
+            {% if pages_cate >= 1 %}
+                 <ul class="pagination justify-content-center">
+                     {% for inx in range (1,pages_cate + 1) %}
+                    <li class="page-item"><a class="page-link" href="{{url_for('home' ,page=inx, category_id = request.args.category_id|int)}}">{{inx}}</a></li>
+                     {% endfor %}
+                </ul>
+            {% endif %}
+
+
+        {% else %}
+            {% if pages > 1 %}
+                 <ul class="pagination justify-content-center">
+                     {% for inx in range (1,pages + 1) %}
+                    <li class="page-item"><a class="page-link" href="{{url_for('home' ,page=inx)}}">{{inx}}</a></li>
+                     {% endfor %}
+                </ul>
+
+            {% endif %}
+
+        {% endif %}
+    {% endif %}
+    {% else %}
+        <h2>Không có sản phẩm nào hết</h2>
+    {% endif %}
+
+{% endblock %}
+
+
+
+
+
