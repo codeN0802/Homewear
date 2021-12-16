@@ -16,12 +16,16 @@
         {% for p in products %}
         <div class="col-md-4 col-xs-12" style="padding:5px">
             <div class="card" style="padding:5px">
-                <img class="card-img-top"
+                <div class="imgdiv">
+                    <img class="card-img-top imgh"
                      src="{{p.image}}" alt="{{p.name}}">
+                </div>
+
                 <div class="card-body">
                     <h5 class="card-title">{{ p.name }}</h5>
                     <p class="card-text">{{"{:,.1f}".format(p.price)}}</p>
-                    <a href="#" class="btn btn-primary" onclick="addToCart({{ p.id }}, '{{p.name}}', {{p.price}})">Đặt hàng</a>
+                    <a href="#" class="btn btn-outline-primary" onclick="addToCart({{ p.id }}, '{{p.name}}', {{p.price}})">Đặt hàng</a>
+                    <a href="{{url_for('product_detail', product_id=p.id)}}" class="btn btn-outline-info">Chi tiết</a>
                  </div>
             </div>
         </div>

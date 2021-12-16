@@ -133,17 +133,63 @@ def add_to_cart():
     session['cart'] = cart
 
     return jsonify(utils.count_cart(cart))
+
+@app.route('/api/update-cart', methods=['put'])
+def update_cart():
+    data=request.json
+    id = str(data.get('id'))
+    quantity = data.get('quantity')
+    cart = session.get('cart')
+    if cart and id in cart:
+        cart[id]['quantity'] = quantity
+        session['cart'] = cart
+
+    return  jsonify(utils.count_cart(cart))
+
+@app.route('/api/delete-cart/<product_id>', methods=['delete'])
+def delete_cart(product_id):
+    cart = session.get('cart')
+
+    if cart and product_id in cart:
+        del cart[product_id]
+        session['cart'] = cart
+    return jsonify(utils.count_cart(cart))
+
+@app.route('/api/add-comment',methods=['post'])
+@login_required
+def add_comment():
+    data=request.json
+    content = data.get('content')
+    product_id = data.get('product_id')
+    try:
+        c = utils.add_comment(content=content, product_id=product_id)
+    except:
+        return {'status':404, 'err_msg':'Chương trình đang bị lỗi'}
+    return {'status': 201,'comment':{
+        'id': c.id,
+        'content':c.content,
+        'created_date':c.created_date,
+        'user':{
+            'username':current_user.username,
+            'avatar': current_user.avatar,
+            'name': current_user.name
+        }
+    }}
+
 @app.route('/api/pay', methods=['post'])
 @login_required
 def pay():
 
 
     try:
+
         utils.add_receipt(session.get('cart'))
-        
+        s1="Bạn đặt hàng thành công"
+
+        s3= s1
         msg = Message('Vy Nguyễn Homewear', sender='nghinguyen08022000@gmail.com',
                       recipients=[current_user.email])
-        msg.body = "Bạn đặt hàng thành công"
+        msg.html=render_template("email.html", stats = utils.count_cart(session.get('cart')))
         mail.send(msg )
         del session['cart']
     except:
@@ -168,7 +214,10 @@ def profile():
 @app.route("/products/<int:product_id>")
 def product_detail(product_id):
     product = utils.get_product_by_id(product_id)
-    return render_template("product_detail.html", product=product)
+    comments = utils.get_comments(product_id=product_id,page=int(request.args.get('page',1)))
+    return render_template("product_detail.html", product=product
+                           ,comments=comments,
+                           pages= math.ceil(utils.count_comments(product_id=product_id)/app.config['COMMENT_SIZE']))
 
 
 if __name__== "__main__":

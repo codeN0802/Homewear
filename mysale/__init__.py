@@ -10,6 +10,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:12345678@localhost
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] =True
 
 app.config['PAGE_SIZE'] = 8
+app.config['COMMENT_SIZE'] = 3
 db = SQLAlchemy(app=app)
 
 cloudinary.config(

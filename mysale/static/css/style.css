@@ -7,5 +7,18 @@ body {
 h1{
     text-align: center;
 }
+.col-md-4 col-xs-12{
+     overflow: hidden;
+}
+.imgdiv{
+    position: relative;
+    overflow: hidden;
 
+}
+.imgdiv img{
+     transition: .7s;
+}
+.imgh:hover{
+     -webkit-transform: scale(1.2);
 
+}

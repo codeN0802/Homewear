@@ -1,14 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>Chi tiết sản phẩm</h1>
-{% if product %}
-<img src="{{url_for('static', filename=product.image)}}" width="100px">
-<a> {{product.name}}--{{"{:,.2f}".format(product.price)}} VND--{{product.description}}</a>
+{% extends 'layout/base.html' %}
+
+{% block title %} Chi tiết sản phẩm {% endblock %}
+
+{% block content %}
+     <h1>Chi tiết sản phẩm</h1>
+     <div class="row">
+        <div class="col-md-5 col-xs-12" style="padding:5px">
+            <img class="card-img-top"
+                     src="{{product.image}}" alt="{{product.name}}">
+        </div>
+         <div class="col-md-7 col-xs-12">
+                <h5 >{{ product.name }}</h5>
+                <h5>{{product.description}}</h5>
+                <h5>{{"{:,.1f}".format(product.price)}} VND</h5>
+
+         </div>
+     </div>
+
+
+<hr>
+{% if current_user.is_authenticated %}
+    <div>
+        <div class="form-group">
+            <textarea class="form-control" placeholder="Nhập nội dung bình luận..." id="commentId" onkeyup="stoppedTyping()"></textarea>
+        </div>
+        <input type="button" class="btn btn-primary" value="Bình luận" onclick="addComment({{ product.id }})" id="start_button" >
+    </div>
+{% else %}
+    <a href="{{ url_for('user_login')}}" class="text-danger">Đăng nhập để bình luận....</a>
+    <br>
 {% endif %}
-</body>
-</html>
+<br>
+<div id="commentArea">
+    {% for c in comments %}
+    <div class="row">
+        <div class="col-md-1 col-xs-4">
+            <img src="{{c.user.avatar}}" width="50px" height="50px" class="rounded-circle">
+        </div>
+        <div class="col-md-11 col-xs-8" style="    border: 1px solid;
+                border-radius: 20px;
+                background-color: #E5eaea;">
+             <span style="font-weight:bold;">{{c.user.name}}  &ensp;</span><em class="mydate">{{c.created_date}}</em>
+            <br><br>
+            <h6>{{c.content}}</h6>
+        </div>
+    </div>
+    <br>
+    {% endfor %}
+</div>
+{% if pages > 1 %}
+                 <ul class="pagination justify-content-center">
+                     {% for inx in range (1,pages + 1) %}
+                    <li class="page-item"><a class="page-link" href="{{url_for('product_detail',product_id=product.id ,page=inx)}}">{{inx}}</a></li>
+                     {% endfor %}
+                </ul>
+
+            {% endif %}
+<script>
+    window.onload= function(){
+        let d = document.getElementsByClassName('mydate')
+        for(let i = 0 ; i< d.length;i++){
+            d[i].innerText = moment(d[i].innerText).locale('vi').fromNow();
+        }
+    }
+
+
+</script>
+
+{% endblock %}
+<br><br>

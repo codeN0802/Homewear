@@ -23,6 +23,7 @@ class User(BaseModel, UserMixin):
     join_date = Column(DateTime,default=datetime.now())
     user_role = Column(Enum(UserRole),default=UserRole.USER)
     receipts = relationship('Receipt', backref= 'user', lazy=True)
+    comments =relationship('Comment',backref='user',lazy=True)
 
     def __str__(self):
         return self.name
@@ -47,9 +48,19 @@ class Product(BaseModel):
     created_date = Column(DateTime,default=datetime.now())
     category_id = Column(Integer,ForeignKey('category.id'), nullable=False) #'tenbang'
     receipt_details = relationship('ReceiptDetail',backref= 'product',lazy=True)
+    comments = relationship('Comment', backref='product', lazy=True)
 
     def __str__(self):
         return self.name
+
+class Comment(BaseModel):
+    content = Column(String(255),nullable=False)
+    product_id = Column(Integer,ForeignKey(Product.id),nullable=False)
+    user_id = Column(Integer,ForeignKey(User.id),nullable=False)
+    created_date= Column(DateTime,default=datetime.now())
+
+    def __str__(self):
+        return self.content
 
 class Receipt(BaseModel):
     created_date = Column(DateTime,default=datetime.now())

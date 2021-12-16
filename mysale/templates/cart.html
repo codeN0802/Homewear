@@ -16,20 +16,29 @@
                  <th>Tên sản phẩm</th>
                  <th>Đơn giá</th>
                  <th>Số lượng</th>
+                <th>action</th>
             </tr>
             {% for c in session['cart'].values() %}
-                <tr>
+                <tr id="product{{ c.id }}">
                     <td>{{c.id}}</td>
                     <td>{{c.name}}</td>
-                    <td>{{"{:,.1f}".format(c.price)}} VNĐ</td>
-                    <td>{{c.quantity}}</td>
+                    <td><span class="price_pro"> {{"{:,.0f}".format(c.price)}}</span> VNĐ</td>
+<!--                    {{"{:,.1f}".format(c.price)}}-->
+                    <td>
+                        <div class="form-goup">
+                            <input type="number" min="1" value="{{c.quantity}}" class="form-control" onblur="updateCart({{c.id}}, this)" tab-index="-1" aria-hidden="true"/>
+                        </div>
+                    </td>
+                    <td>
+                        <input class="btn btn-outline-danger" value="Xóa" type="button" onclick="deleteCart({{c.id}})" />
+                    </td>
                 </tr>
             {% endfor %}
         </table>
         {% if stats %}
             <div class="alert alert-info">
-                <h4> Tổng sản phẩm: {{stats.total_quantity}}</h4>
-                 <h4> Tổng tiền: {{"{:,.1f}".format(stats.total_amount)}} VNĐ</h4>
+                <h4> Tổng sản phẩm: <span class="countCart">{{stats.total_quantity}}</span></h4>
+                <h4> Tổng tiền: <span id="total_amount">{{"{:,.1f}".format(stats.total_amount)}}</span> VNĐ</h4>
 
             </div>
         {% endif %}
